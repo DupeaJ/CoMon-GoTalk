@@ -58,4 +58,46 @@ module.exports = {
             res.status(500).json(err);
         }
     },
+    // async addReaction(req, res) {
+    //     try {
+    //         const addedReaction = await Thoughts.updateOne(
+    //             { _id: req.params.thoughtsId },
+    //             req.body
+    //         );
+    //         res.json(addedReaction);
+    //     } catch (err) {
+    //         res.status(500).json(err);
+    //     }
+    // },
+    async addReaction(req, res) {
+        try {
+            const thought = await Thoughts.findById(req.params.userId);
+            const post = await post.findOneAndUpdate(
+                { _id: req.body.postId },
+                { $addToSet: { reaction: reaction._id } },
+                { new: true }
+            );
+            if (!user.friends.includes(req.params.friendId)) {
+                user.friends.push(req.params.friendId);
+                await user.save();
+                res.status(200).send({ message: "Friend added successfully!" });
+            } else {
+                res.status(400).send({ message: "Already friends!" });
+            }
+        } catch (error) {
+            res.status(500).send(error);
+        }
+    },
+
+    async removeReaction(req, res) {
+        try {
+            const thought = await Thoughts.findOneAndDelete(
+                { _id: req.params.thoughtsId },
+                req.body
+            );
+            res.json(addedReaction);
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    },
 };
