@@ -19,7 +19,7 @@ Clone repo then run in a terminal, first install packages then run node index.js
 
 <img src="assets/photos/CoMon-GoTalk.PNG" alt="screenshot" width="75%" height="75%">
 
-[![Walkthrough Video]("assets/photos/MongoWalkthrough.PNG")](https://drive.google.com/file/d/1PcLpeArcaWIt6tM7TfOaiPu1QCvB0H6H/view)
+[![Walkthrough Video](assets/photos/MongoWalkthrough.PNG)](https://drive.google.com/file/d/1PcLpeArcaWIt6tM7TfOaiPu1QCvB0H6H/view)
 
 <h2 align="center">Usage</h2>
 
