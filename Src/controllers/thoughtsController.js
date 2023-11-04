@@ -1,33 +1,44 @@
 const { Thoughts } = require("../models");
+const { User } = require("../models");
 
 module.exports = {
     async getThoughts(req, res) {
         try {
-            const thoughtsData = await Thoughts.find();
-            res.json(thoughtsData);
+            const thoughts = await Thoughts.find();
+            res.json(thoughts);
         } catch (err) {
             res.status(500).json(err);
         }
     },
     async getSingleThought(req, res) {
         try {
-            const singleThought = await Thoughts.findOne({
+            const thoughts = await Thoughts.findOne({
                 _id: req.params.thoughtsId,
-            }).select("-__v");
-            if (!singleThought) {
+            });
+            res.json(thoughts);
+
+            if (!thoughts) {
                 return res
                     .status(404)
                     .json({ message: "No thought with that ID!" });
             }
-            res.json(singleThought);
         } catch (err) {
             res.status(500).json(err);
         }
     },
     async createThought(req, res) {
         try {
-            const newThought = await Thoughts.create(req.body);
-            res.json(newThought);
+            const thought = await Thoughts.create(req.body);
+
+            const user = await User.findOneAndUpdate(
+                { username: req.body.username },
+                { $push: { thoughts: thought._id } },
+                { new: true }
+            );
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            res.status(201).json(thought);
         } catch (err) {
             res.status(500).json(err);
         }
@@ -36,7 +47,8 @@ module.exports = {
         try {
             const updatedThought = await Thoughts.updateOne(
                 { _id: req.params.thoughtsId },
-                req.body
+                { $set: req.body },
+                { new: true }
             );
             res.json(updatedThought);
         } catch (err) {
@@ -58,46 +70,57 @@ module.exports = {
             res.status(500).json(err);
         }
     },
-    // async addReaction(req, res) {
-    //     try {
-    //         const addedReaction = await Thoughts.updateOne(
-    //             { _id: req.params.thoughtsId },
-    //             req.body
-    //         );
-    //         res.json(addedReaction);
-    //     } catch (err) {
-    //         res.status(500).json(err);
-    //     }
-    // },
+
     async addReaction(req, res) {
         try {
-            const thought = await Thoughts.findById(req.params.userId);
-            const post = await post.findOneAndUpdate(
-                { _id: req.body.postId },
-                { $addToSet: { reaction: reaction._id } },
+            const thoughtId = req.params.thoughtsId;
+
+            const update = await Thoughts.findOneAndUpdate(
+                { _id: thoughtId },
+                { $push: { reactions: req.body } },
                 { new: true }
             );
-            if (!user.friends.includes(req.params.friendId)) {
-                user.friends.push(req.params.friendId);
-                await user.save();
-                res.status(200).send({ message: "Friend added successfully!" });
+
+            if (!update) {
+                return res.status(400).send({
+                    message: "Thought not found",
+                });
             } else {
-                res.status(400).send({ message: "Already friends!" });
+                res.status(200).send(update);
             }
         } catch (error) {
-            res.status(500).send(error);
+            console.error(error);
+            res.status(500).send({
+                message: "An error occurred",
+                error: error.message,
+            });
         }
     },
 
     async removeReaction(req, res) {
         try {
-            const thought = await Thoughts.findOneAndDelete(
-                { _id: req.params.thoughtsId },
-                req.body
+            const { thoughtsId, reactionId } = req.params;
+
+            const thought = await Thoughts.findOneAndUpdate(
+                { _id: thoughtsId },
+                { $pull: { reactions: { _id: reactionId } } },
+                { new: true }
             );
-            res.json(addedReaction);
+
+            if (!thought) {
+                return res.status(404).json({
+                    message: "Thought not found or reaction not found",
+                });
+            }
+
+            return res.json({ message: "Reaction removed", thought });
         } catch (err) {
-            res.status(500).json(err);
+            return res
+                .status(500)
+                .json({
+                    message: "Error removing reaction",
+                    error: err.message,
+                });
         }
     },
 };
