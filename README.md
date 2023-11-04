@@ -8,7 +8,6 @@ This project is a NoSQL api backend for a social media startup. It uses mongodb 
 
 - [Installation](##installation)
 - [Usage](##usage)
-- [Credits](##credits)
 - [License](##license)
 
 <h2 align="center"> Installation</h2>
@@ -20,11 +19,11 @@ Clone repo then run in a terminal, first install packages then run node index.js
 
 <img src="assets/photos/CoMon-GoTalk.PNG" alt="screenshot" width="75%" height="75%">
 
+[![Walkthrough Video]("assets/photos/MongoWalkthrough.PNG")](https://drive.google.com/file/d/1PcLpeArcaWIt6tM7TfOaiPu1QCvB0H6H/view)
+
 <h2 align="center">Usage</h2>
 
 Can be used and refractored to connect to a front end of a social media company as a backend api.
-
-<h2 align="center">Credits</h2>
 
 
 <h2 align="center">License</h2>
