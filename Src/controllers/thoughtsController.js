@@ -15,16 +15,17 @@ module.exports = {
             const thoughts = await Thoughts.findOne({
                 _id: req.params.thoughtsId,
             });
-            res.json(thoughts);
-
+            
             if (!thoughts) {
                 return res
                     .status(404)
                     .json({ message: "No thought with that ID!" });
             }
+            res.json(thoughts);
         } catch (err) {
             res.status(500).json(err);
         }
+        
     },
     async createThought(req, res) {
         try {
